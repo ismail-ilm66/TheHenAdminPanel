@@ -15,14 +15,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final FocusNode _usernameFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
   bool _isObscured = true;
+  final bool res = false;
 
   void _login(BuildContext context) {
     if (_usernameController.text == 'admin' &&
         _passwordController.text == 'admin1@') {
       Get.off(() => DashboardScreen(),
-          transition: Transition.fadeIn,
-          duration: Duration(milliseconds: 500)
-      );
+          transition: Transition.fadeIn, duration: Duration(milliseconds: 500));
     } else {
       Get.snackbar(
         "Error",
@@ -73,21 +72,26 @@ class _LoginScreenState extends State<LoginScreen> {
                     fontWeight: FontWeight.bold,
                     color: ColorPalette.primaryColor,
                   ),
-                ).animate().fadeIn(duration: 500.ms).slideY(begin: -0.5, end: 0),
+                )
+                    .animate()
+                    .fadeIn(duration: 500.ms)
+                    .slideY(begin: -0.5, end: 0),
                 SizedBox(height: 30),
                 TextField(
                   controller: _usernameController,
                   focusNode: _usernameFocus,
                   decoration: InputDecoration(
                     labelText: "Username",
-                    prefixIcon: Icon(Icons.person, color: ColorPalette.primaryColor),
+                    prefixIcon:
+                        Icon(Icons.person, color: ColorPalette.primaryColor),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
                       borderSide: BorderSide(color: ColorPalette.primaryColor),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: ColorPalette.primaryColor, width: 2),
+                      borderSide: BorderSide(
+                          color: ColorPalette.primaryColor, width: 2),
                     ),
                   ),
                 ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.1, end: 0),
@@ -98,7 +102,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: _isObscured,
                   decoration: InputDecoration(
                     labelText: "Password",
-                    prefixIcon: Icon(Icons.lock, color: ColorPalette.primaryColor),
+                    prefixIcon:
+                        Icon(Icons.lock, color: ColorPalette.primaryColor),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isObscured ? Icons.visibility : Icons.visibility_off,
@@ -116,7 +121,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: ColorPalette.primaryColor, width: 2),
+                      borderSide: BorderSide(
+                          color: ColorPalette.primaryColor, width: 2),
                     ),
                   ),
                 ).animate().fadeIn(delay: 500.ms).slideX(begin: 0.1, end: 0),
@@ -132,7 +138,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                ).animate()
+                )
+                    .animate()
                     .fadeIn(delay: 700.ms)
                     .scale(begin: Offset(0.5, 0.5), end: Offset(1, 1)),
               ],
