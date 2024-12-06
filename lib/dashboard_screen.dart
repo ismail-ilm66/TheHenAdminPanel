@@ -7,6 +7,17 @@ import 'package:wordpress_admin/send_notification_service.dart';
 import 'colors.dart';
 
 class DashboardScreen extends StatelessWidget {
+  Future<int> _getTotalUsersCount() async {
+    try {
+      QuerySnapshot usersSnapshot = await _firestore.collection('users').get();
+      return usersSnapshot.size;
+    } catch (e) {
+      print("Error fetching user count: $e");
+      return 0;
+    }
+  }
+
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -53,6 +64,7 @@ class DashboardScreen extends StatelessWidget {
     }
   }
 
+/*
   void _sendNotificationToSpecificUser() async {
     String username = _usernameController.text.trim();
     String title = _titleController.text.trim();
@@ -103,7 +115,61 @@ class DashboardScreen extends StatelessWidget {
       );
     }
   }
+*/
 
+  void _sendNotificationToSpecificUser() async {
+    String usernames = _usernameController.text.trim();
+    String title = _titleController.text.trim();
+    String description = _descriptionController.text.trim();
+
+    if (usernames.isEmpty || title.isEmpty || description.isEmpty) {
+      Get.snackbar(
+        "Error",
+        "Please fill in all fields",
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    try {
+      List<String> usernameList = usernames.split(',').map((username) => username.trim()).toList();
+
+      for (var username in usernameList) {
+        DocumentSnapshot userDoc = await _firestore.collection('users').doc(username).get();
+
+        if (userDoc.exists) {
+          String token = userDoc['fcm_token'];
+          await sendNotification(token, title, description);
+
+          Get.snackbar(
+            "Success",
+            "Notification sent to $username!",
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
+        } else {
+          Get.snackbar(
+            "Error",
+            "User $username not found",
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white,
+          );
+        }
+      }
+
+      _titleController.clear();
+      _descriptionController.clear();
+      _usernameController.clear();
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Failed to send notification: $e",
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+    }
+  }
 
 
   @override
@@ -138,22 +204,45 @@ class DashboardScreen extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: _buildQuickStatCard(
-                      title: "Total Users",
-                      value: "2,345",
-                      icon: Icons.people,
-                      color: Colors.blue,
+                    child: FutureBuilder<int>(
+                      future: _getTotalUsersCount(),  // Fetching the total user count from Firestore
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          // While waiting for the data, show a loading state
+                          return _buildQuickStatCard(
+                            title: "Total Users",
+                            value: "Loading...",  // Show loading state
+                            icon: Icons.people,
+                            color: Colors.blue,
+                          );
+                        } else if (snapshot.hasError) {
+                          return _buildQuickStatCard(
+                            title: "Total Users",
+                            value: "Error",
+                            icon: Icons.error,
+                            color: Colors.red,
+                          );
+                        } else if (snapshot.hasData) {
+                          int totalUsers = snapshot.data ?? 0;
+                          return _buildQuickStatCard(
+                            title: "Total Users",
+                            value: totalUsers.toString(),
+                            icon: Icons.people,
+                            color: Colors.blue,
+                          );
+                        } else {
+                          return _buildQuickStatCard(
+                            title: "Total Users",
+                            value: "0",
+                            icon: Icons.people,
+                            color: Colors.blue,
+                          );
+                        }
+                      },
                     ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.1, end: 0),
                   ),
+
                   SizedBox(width: 20),
-                  Expanded(
-                    child: _buildQuickStatCard(
-                      title: "Active Notifications",
-                      value: "12",
-                      icon: Icons.notifications_active,
-                      color: Colors.green,
-                    ).animate().fadeIn(delay: 500.ms).slideX(begin: 0.1, end: 0),
-                  ),
                 ],
               ),
             ],
