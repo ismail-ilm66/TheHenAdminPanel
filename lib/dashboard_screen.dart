@@ -7,21 +7,13 @@ import 'package:wordpress_admin/send_notification_service.dart';
 import 'colors.dart';
 
 class DashboardScreen extends StatelessWidget {
-  Future<int> _getTotalUsersCount() async {
-    try {
-      QuerySnapshot usersSnapshot = await _firestore.collection('users').get();
-      return usersSnapshot.size;
-    } catch (e) {
-      print("Error fetching user count: $e");
-      return 0;
-    }
-  }
-
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+
+
 
   void _sendNotificationToAll() async {
     String title = _titleController.text.trim();
@@ -64,58 +56,7 @@ class DashboardScreen extends StatelessWidget {
     }
   }
 
-/*
-  void _sendNotificationToSpecificUser() async {
-    String username = _usernameController.text.trim();
-    String title = _titleController.text.trim();
-    String description = _descriptionController.text.trim();
 
-    if (username.isEmpty || title.isEmpty || description.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Please fill in all fields",
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
-    try {
-      DocumentSnapshot userDoc =
-      await _firestore.collection('users').doc(username).get();
-
-      if (userDoc.exists) {
-        String token = userDoc['fcm_token'];
-        await sendNotification(token, title, description);
-
-        Get.snackbar(
-          "Success",
-          "Notification sent to $username!",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
-
-        _titleController.clear();
-        _descriptionController.clear();
-        _usernameController.clear();
-      } else {
-        Get.snackbar(
-          "Error",
-          "User not found",
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-        );
-      }
-    } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Failed to send notification: $e",
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
-      );
-    }
-  }
-*/
 
   void _sendNotificationToSpecificUser() async {
     String usernames = _usernameController.text.trim();
@@ -171,6 +112,16 @@ class DashboardScreen extends StatelessWidget {
     }
   }
 
+  Future<int> _getTotalUsersCount() async {
+    try {
+      QuerySnapshot usersSnapshot = await _firestore.collection('users').get();
+      return usersSnapshot.size;
+    } catch (e) {
+      print("Error fetching user count: $e");
+      return 0;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -185,10 +136,10 @@ class DashboardScreen extends StatelessWidget {
         backgroundColor: ColorPalette.primaryColor,
         elevation: 0,
         actions: [
-          IconButton(
+/*          IconButton(
             icon: Icon(Icons.logout),
             onPressed: () => Get.back(),
-          )
+          )*/
         ],
       ),
       body: SingleChildScrollView(

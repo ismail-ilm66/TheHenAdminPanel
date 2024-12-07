@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -16,10 +17,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final FocusNode _passwordFocus = FocusNode();
   bool _isObscured = true;
 
-  void _login(BuildContext context) {
+/*  void _login(BuildContext context) {
     if (_usernameController.text == 'admin' &&
         _passwordController.text == 'admin1@') {
-      Get.off(() => DashboardScreen(),
+      Get.off(() =>  DashboardScreen(),
           transition: Transition.fadeIn,
           duration: Duration(milliseconds: 500)
       );
@@ -32,7 +33,44 @@ class _LoginScreenState extends State<LoginScreen> {
         animationDuration: Duration(milliseconds: 300),
       );
     }
+  }*/
+
+  void _login(BuildContext context) async {
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('admin')
+          .where('username', isEqualTo: username)
+          .where('password', isEqualTo: password)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        // Login successful
+        Get.off(() => DashboardScreen(),
+            transition: Transition.fadeIn,
+            duration: Duration(milliseconds: 500));
+      } else {
+        // Invalid credentials
+        Get.snackbar(
+          "Error",
+          "Invalid credentials",
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+          animationDuration: Duration(milliseconds: 300),
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "An error occurred: $e",
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
