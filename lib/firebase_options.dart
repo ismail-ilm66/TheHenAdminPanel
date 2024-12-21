@@ -47,31 +47,30 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBO2SPGmtGlWz_3a5g_1KVSE8SxaNSxI4Q',
-    appId: '1:46106613533:web:9a23339d79808d4baeb3f4',
-    messagingSenderId: '46106613533',
-    projectId: 'joyufulapp',
-    authDomain: 'joyufulapp.firebaseapp.com',
-    storageBucket: 'joyufulapp.firebasestorage.app',
-    measurementId: 'G-CEH7LZRH1R',
+    apiKey: 'AIzaSyCBtPWc9FiE4wGjTISg9K8TmBFTVKtClBY',
+    appId: '1:1000950432361:web:3e5157c60e1a17956898f8',
+    messagingSenderId: '1000950432361',
+    projectId: 'apphen-22',
+    authDomain: 'apphen-22.firebaseapp.com',
+    storageBucket: 'apphen-22.firebasestorage.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyALnk1-7Cq14-fD4TJJCQ0HSqKeMz-cyfg',
-    appId: '1:46106613533:ios:be1c9e1fceff9aa0aeb3f4',
-    messagingSenderId: '46106613533',
-    projectId: 'joyufulapp',
-    storageBucket: 'joyufulapp.firebasestorage.app',
+    apiKey: 'AIzaSyCUyI3fN77PduG0UnUeZKzeIcPxGjnYq00',
+    appId: '1:1000950432361:ios:9c773a872f770ee06898f8',
+    messagingSenderId: '1000950432361',
+    projectId: 'apphen-22',
+    storageBucket: 'apphen-22.firebasestorage.app',
     iosBundleId: 'com.example.wordpressAdmin',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBO2SPGmtGlWz_3a5g_1KVSE8SxaNSxI4Q',
-    appId: '1:46106613533:web:67c718e6b9b38378aeb3f4',
-    messagingSenderId: '46106613533',
-    projectId: 'joyufulapp',
-    authDomain: 'joyufulapp.firebaseapp.com',
-    storageBucket: 'joyufulapp.firebasestorage.app',
-    measurementId: 'G-JQDDMZKHP7',
+    apiKey: 'AIzaSyCBtPWc9FiE4wGjTISg9K8TmBFTVKtClBY',
+    appId: '1:1000950432361:web:984b7a0d968bc2d46898f8',
+    messagingSenderId: '1000950432361',
+    projectId: 'apphen-22',
+    authDomain: 'apphen-22.firebaseapp.com',
+    storageBucket: 'apphen-22.firebasestorage.app',
   );
+
 }
