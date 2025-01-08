@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -17,18 +18,38 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isObscured = true;
   final bool res = false;
 
-  void _login(BuildContext context) {
-    if (_usernameController.text == 'admin' &&
-        _passwordController.text == 'admin1@') {
-      Get.off(() => DashboardScreen(),
-          transition: Transition.fadeIn, duration: Duration(milliseconds: 500));
-    } else {
+  void _login(BuildContext context) async {
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('admin')
+          .where('username', isEqualTo: username)
+          .where('password', isEqualTo: password)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        // Login successful
+        Get.off(() => DashboardScreen(),
+            transition: Transition.fadeIn,
+            duration: const Duration(milliseconds: 500));
+      } else {
+        // Invalid credentials
+        Get.snackbar(
+          "Error",
+          "Invalid credentials",
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+          animationDuration: const Duration(milliseconds: 300),
+        );
+      }
+    } catch (e) {
       Get.snackbar(
         "Error",
-        "Invalid credentials",
+        "An error occurred: $e",
         backgroundColor: Colors.redAccent,
         colorText: Colors.white,
-        animationDuration: Duration(milliseconds: 300),
       );
     }
   }
@@ -65,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                const Text(
                   "Admin Login",
                   style: TextStyle(
                     fontSize: 28,
@@ -76,34 +97,35 @@ class _LoginScreenState extends State<LoginScreen> {
                     .animate()
                     .fadeIn(duration: 500.ms)
                     .slideY(begin: -0.5, end: 0),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 TextField(
                   controller: _usernameController,
                   focusNode: _usernameFocus,
                   decoration: InputDecoration(
                     labelText: "Username",
-                    prefixIcon:
-                        Icon(Icons.person, color: ColorPalette.primaryColor),
+                    prefixIcon: const Icon(Icons.person,
+                        color: ColorPalette.primaryColor),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: ColorPalette.primaryColor),
+                      borderSide:
+                          const BorderSide(color: ColorPalette.primaryColor),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                           color: ColorPalette.primaryColor, width: 2),
                     ),
                   ),
                 ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.1, end: 0),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextField(
                   controller: _passwordController,
                   focusNode: _passwordFocus,
                   obscureText: _isObscured,
                   decoration: InputDecoration(
                     labelText: "Password",
-                    prefixIcon:
-                        Icon(Icons.lock, color: ColorPalette.primaryColor),
+                    prefixIcon: const Icon(Icons.lock,
+                        color: ColorPalette.primaryColor),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isObscured ? Icons.visibility : Icons.visibility_off,
@@ -117,31 +139,32 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: ColorPalette.primaryColor),
+                      borderSide:
+                          const BorderSide(color: ColorPalette.primaryColor),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                           color: ColorPalette.primaryColor, width: 2),
                     ),
                   ),
                 ).animate().fadeIn(delay: 500.ms).slideX(begin: 0.1, end: 0),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 ElevatedButton.icon(
                   onPressed: () => _login(context),
-                  icon: Icon(Icons.login, color: Colors.white),
-                  label: Text("Login", style: TextStyle(color: Colors.white)),
+                  icon: const Icon(Icons.login, color: Colors.white),
+                  label: const Text("Login",
+                      style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ColorPalette.primaryColor,
-                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 40),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 40),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                )
-                    .animate()
-                    .fadeIn(delay: 700.ms)
-                    .scale(begin: Offset(0.5, 0.5), end: Offset(1, 1)),
+                ).animate().fadeIn(delay: 700.ms).scale(
+                    begin: const Offset(0.5, 0.5), end: const Offset(1, 1)),
               ],
             ),
           ),
